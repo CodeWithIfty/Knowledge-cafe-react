@@ -8,18 +8,30 @@ import { useState } from 'react'
 
 function App() {
   const [bookmarks, setBookmarks] = useState([]);
-  const [readingTime, setReadingTime] = useState(0)
+  const [readingTime, setReadingTime] = useState(0);
+  const [markedRead, setMarkRead] = useState([])
 
   const bookmarkHandler = (blog) =>{
-    const newBookmarks = [...bookmarks, blog]
-    setBookmarks(newBookmarks)
+
+    if(bookmarks.includes(blog)){
+      setBookmarks(bookmarks.filter(bookmark => bookmark !== blog))
+    }else{
+      const newBookmarks = [...bookmarks, blog]
+      setBookmarks(newBookmarks)
+    }
   }
 
   const readingTimeHandler = blog =>{
     const {reading_time} =blog;
-    const newReadingTime = readingTime + reading_time;
-    setReadingTime(newReadingTime);
-    console.log(readingTime)
+
+    if(markedRead.includes(blog)){
+      setMarkRead(markedRead.filter(markedRead => markedRead !== blog))
+      setReadingTime(readingTime - reading_time); 
+    }
+    else{
+      setMarkRead([...markedRead, blog])
+      setReadingTime(readingTime + reading_time); 
+    }
   }
 
 
@@ -30,6 +42,8 @@ function App() {
       <Blogs 
       bookmarkHandler={bookmarkHandler}
       readingTimeHandler={readingTimeHandler}
+      bookmarks = {bookmarks}
+      markedRead = {markedRead}
       />
       <Bookmarks
        bookmarks={bookmarks}
